@@ -59,9 +59,15 @@ function Home() {
   };
 
   const submitImage = async () => {
+    const formData = new FormData();
+    formData.append("image", selectedImage);
+
     await fetch("http://localhost:8000/processImage", {
       method: "POST",
-      body: JSON.stringify({ image: selectedImage }),
+      headers: {
+        "Content-Type": "multipart/form-data; boundary=XXX",
+      },
+      body: formData,
     });
   };
 
