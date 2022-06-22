@@ -39,6 +39,7 @@ function Home() {
   const [displayedName, setDisplayedName] = useState("");
   const [isNameUploaded, setIsNameUploaded] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isPictureUploaded, setIsPictureUploaded] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,21 +55,19 @@ function Home() {
   };
 
   const uploadImage = (e) => {
-    setSelectedImage(e.target.value);
-    console.log({ selectedImage });
+    setSelectedImage(e.target.files[0]);
   };
 
   const submitImage = async () => {
     const formData = new FormData();
     formData.append("image", selectedImage);
 
-    await fetch("http://localhost:8000/processImage", {
+    const res = await fetch("http://localhost:8000/processImage", {
       method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data; boundary=XXX",
-      },
       body: formData,
     });
+
+    if (res.status === 200) setIsPictureUploaded(true);
   };
 
   const handleSubmit = async () => {
@@ -115,12 +114,15 @@ function Home() {
       )}
 
       {isNameUploaded && (
+        <div className={classes.sections}>
+          <Typography gutterBottom classes={{ root: classes.graphTitle }} variant={"h4"}>
+            {`Hi ${displayedName}!`}
+          </Typography>
+        </div>
+      )}
+
+      {isNameUploaded && !isPictureUploaded && (
         <>
-          <div className={classes.sections}>
-            <Typography gutterBottom classes={{ root: classes.graphTitle }} variant={"h4"}>
-              {`Hi ${displayedName}!`}
-            </Typography>
-          </div>
           <div className={classes.sections}>
             <Typography gutterBottom style={{ marginTop: 15 }} classes={{ root: classes.graphTitle }} variant={"h6"}>
               {`Would you like to upload a picture?`}
@@ -141,6 +143,14 @@ function Home() {
             </div>
           </div>
         </>
+      )}
+
+      {isPictureUploaded && (
+        <div className={classes.sections}>
+          <Typography gutterBottom classes={{ root: classes.graphTitle }} variant={"h4"}>
+            {`You are a beautiful person!`}
+          </Typography>
+        </div>
       )}
     </Paper>
   );

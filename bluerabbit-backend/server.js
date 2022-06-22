@@ -43,7 +43,6 @@ const storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 app.post("/processImage", upload.single("image"), (req, res, next) => {
-  console.log({ req: JSON.stringify(req.body) });
   const file = req.file;
   if (!file) {
     return res.status(400).send({ message: "Please upload a file." });
